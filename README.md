@@ -15,6 +15,8 @@
 
 [Get started](#quick-start) · [Architecture](#architecture) · [Evidence](#measured-evidence) · [Live demo](#live-demo) · [Limitations](#limitations-and-next-steps)
 
+**Judges' evidence files:** [02 · Listen & record](docs/qr/02-listen-and-record.md) · [03 · Results](docs/qr/03-results-card.md) · [04 · Architecture](docs/qr/04-architecture-sheet.md) · [05 · Proof pack](docs/qr/05-proof-pack.md)
+
 </div>
 
 > [!IMPORTANT]
