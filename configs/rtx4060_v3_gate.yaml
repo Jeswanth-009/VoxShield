@@ -1,0 +1,6 @@
+base: gtcrn_v3.yaml
+
+# Mandatory short gate before committing to a long fine-tune.
+train:
+  epochs: 1
+

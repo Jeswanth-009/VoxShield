@@ -1,0 +1,16 @@
+base: hybrid_v4.yaml
+
+# Runtime policy copied into the final v4 checkpoint before export.  Training
+# still happens on the laptop; this file documents the Pi acceptance profile.
+train:
+  num_workers: 2
+runtime:
+  wet_mix: 1.0
+  output_limit: 0.95
+  deadline_fraction: 0.80
+  max_consecutive_overruns: 3
+  recovery_frames: 200
+onnx:
+  intra_op_threads: 1
+  inter_op_threads: 1
+  graph_optimization: all

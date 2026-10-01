@@ -1,0 +1,16 @@
+{
+  "checkpoint": "release/v15/best.pt",
+  "checkpoint_sha256": "9af778772b9a4c531106cd244f56bcb326f1b00056a67762b1dca790d5799629",
+  "onnx": "release/v15/voxshield-v15.onnx",
+  "onnx_sha256": "33e352558a33670dfd65e6412c89c13f50b94140721672c09c9ae43701bc4307",
+  "opset": 17,
+  "architecture": "deep_filter_dual",
+  "max_output_absolute_error": 1.8197169993072748e-08,
+  "max_state_absolute_error": 4.06801700592041e-06,
+  "per_output_absolute_error": {
+    "enhanced_ri": 1.8197169993072748e-08,
+    "state_out": 4.06801700592041e-06
+  },
+  "tolerance": 0.0002,
+  "passed": true
+}

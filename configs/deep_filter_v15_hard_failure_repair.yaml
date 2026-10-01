@@ -1,0 +1,101 @@
+base: deep_filter_v10.yaml
+recipe_version: 18
+
+# V15 is a narrow repair from v14. It targets only the v14 strict-gate
+# per-clip failures while keeping the strong v14 average quality intact.
+model:
+  initialize_from: checkpoints_deep_filter_v14_realworld_audioset/best.pt
+
+data:
+  samples_per_epoch: 3000
+  train_clean_manifest: data/manifests_v14/clean_train.jsonl
+  val_clean_manifest: data/manifests_v14/clean_val.jsonl
+  train_noise_manifests:
+    stationary: data/manifests_v14/noise_stationary_train.jsonl
+    nonstationary: data/manifests_v14/noise_nonstationary_train.jsonl
+    impulsive: data/manifests_v14/noise_impulsive_train.jsonl
+    environmental: data/manifests_v14/noise_environmental_train.jsonl
+  val_noise_manifests:
+    stationary: data/manifests_v14/noise_stationary_val.jsonl
+    nonstationary: data/manifests_v14/noise_nonstationary_val.jsonl
+    impulsive: data/manifests_v14/noise_impulsive_val.jsonl
+    environmental: data/manifests_v14/noise_environmental_val.jsonl
+  train_rir_manifest: data/manifests_v14/rir_train.jsonl
+  val_rir_manifest: data/manifests_v14/rir_val.jsonl
+  required_validation_datasets: []
+
+  train_hard_mix_manifest: data/mixtures/v15_hard_failures/manifest.jsonl
+  hard_mix_probability: 0.45
+
+  clean_probability: 0.22
+  near_clean_probability: 0.22
+  snr_db: [-16.0, 10.0]
+  snr_sampling_ranges:
+    - {min: -18.0, max: -10.0, weight: 2.0}
+    - {min: -10.0, max: -2.0, weight: 2.4}
+    - {min: -2.0, max: 10.0, weight: 1.0}
+  multi_noise_probability: 0.55
+  reverb_probability: 0.28
+  clipping_probability: 0.16
+  clipping_threshold: [0.30, 0.90]
+  spectral_tilt_probability: 0.50
+
+  reference_speech_leak_db: [-24.0, -4.0]
+  reference_self_noise_snr_db: [22.0, 50.0]
+  reference_tilt_probability: 0.75
+
+  noise_dataset_weights:
+    MAD_dataset: 4.0
+    DNS-Challenge: 1.6
+    esc-50: 1.8
+    user_recordings_wav: 3.0
+    gunshot: 2.5
+    explosion: 2.5
+    footsteps: 2.5
+    engine: 3.0
+    vehicle: 3.5
+    siren: 2.5
+    helicopter: 4.0
+    aircraft: 4.0
+  noise_label_weights:
+    vehicle: 4.0
+    helicopter: 4.0
+    fighter: 4.0
+    shelling: 3.0
+    footsteps: 3.0
+    gunshot: 2.5
+    explosion: 2.5
+    airplane: 3.0
+    vacuum_cleaner: 2.5
+    clock_tick: 2.0
+    siren: 2.5
+  category_weights:
+    stationary: 1.4
+    nonstationary: 2.8
+    impulsive: 2.4
+    environmental: 1.2
+
+loss:
+  stoi_envelope: 0.65
+  speech_retention: 2.2
+  spectral_hole: 1.8
+  spectral_delta: 1.6
+  waveform_l1: 0.55
+  clean_identity: 1.5
+  clean_spectral_identity: 1.0
+
+train:
+  epochs: 5
+  batch_size: 12
+  num_workers: 0
+  persistent_workers: false
+  learning_rate: 0.000008
+  early_stopping_patience: 3
+  checkpoint_dir: checkpoints_deep_filter_v15_hard_failure_repair
+  run_dir: runs_deep_filter_v15_hard_failure_repair
+  selection_weights:
+    total: 1.0
+    stoi_envelope: 2.0
+    speech_retention: 1.5
+    clean_identity: 1.6
+    clean_spectral_identity: 1.0

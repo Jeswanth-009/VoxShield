@@ -1,0 +1,30 @@
+{
+  "test_id": "replace-with-unique-id",
+  "timestamp_utc": null,
+  "operator": null,
+  "fixture_and_headset": null,
+  "secondary_path_calibrated": false,
+  "secondary_path_file": null,
+  "maximum_safe_output": 0.0,
+  "maximum_safe_output_units": "calibrated digital peak or SPL limit; describe exactly",
+  "stable": false,
+  "attenuation_db_by_band": {
+    "20_125_hz": null,
+    "125_250_hz": null,
+    "250_500_hz": null,
+    "500_1000_hz": null
+  },
+  "test_signals": [],
+  "feedback_or_oscillation_observed": null,
+  "hardware_bypass_verified": false,
+  "bypass_cases": {
+    "process_crash": false,
+    "pi_failure": false,
+    "usb_disconnect": false,
+    "power_loss": false
+  },
+  "raw_evidence_paths": [],
+  "passed": false,
+  "notes": "Begin at low level with a dummy load or fixture; do not test unstable ANC on a person."
+}
+

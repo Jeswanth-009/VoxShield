@@ -1,0 +1,20 @@
+[Unit]
+Description=VoxShield local read-only engineering dashboard
+After=network.target voxshield-v4.service
+
+[Service]
+Type=simple
+User=voxshield
+Group=audio
+WorkingDirectory=/opt/voxshield
+ExecStart=/opt/voxshield/.venv/bin/voxshield-dashboard --telemetry-file /opt/voxshield/artifacts/live-telemetry.json --host 127.0.0.1 --port 8765
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/opt/voxshield/artifacts
+
+[Install]
+WantedBy=multi-user.target

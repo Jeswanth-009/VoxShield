@@ -1,0 +1,5 @@
+base: rtx4060.yaml
+
+# Second quality gate: resume stage 1 and train through epoch 20.
+train:
+  epochs: 20

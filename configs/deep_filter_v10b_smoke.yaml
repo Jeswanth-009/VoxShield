@@ -1,0 +1,11 @@
+base: deep_filter_v10b_stoi.yaml
+
+data:
+  samples_per_epoch: 32
+train:
+  epochs: 1
+  batch_size: 4
+  num_workers: 0
+  persistent_workers: false
+  checkpoint_dir: checkpoints_deep_filter_v10b_smoke
+  run_dir: runs_deep_filter_v10b_smoke

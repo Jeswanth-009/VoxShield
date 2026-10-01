@@ -1,0 +1,27 @@
+{
+  "test_id": "replace-with-unique-id",
+  "timestamp_utc": null,
+  "protocol": "Randomized, level-matched comparison of noisy, baseline and candidate audio",
+  "blind": true,
+  "listener_count": 0,
+  "listener_language_coverage": [],
+  "conditions": [
+    "clean",
+    "near_clean",
+    "stationary",
+    "nonstationary",
+    "impulsive",
+    "environmental",
+    "mixed",
+    "defence_transient_over_active_speech"
+  ],
+  "ratings_file": null,
+  "minimum_acceptance": {
+    "speech_intelligibility_not_worse_than_noisy": true,
+    "no_obvious_50_to_100_ms_speech_erasure": true,
+    "clean_speech_not_audibly_degraded": true
+  },
+  "passed": false,
+  "reviewer_notes": null
+}
+

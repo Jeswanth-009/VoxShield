@@ -1,0 +1,27 @@
+base: hybrid_v4.yaml
+
+audio:
+  segment_seconds: 1.0
+data:
+  samples_per_epoch: 64
+  train_clean_manifest: data/manifests_v4/clean_train.jsonl
+  val_clean_manifest: data/manifests_v4/clean_val.jsonl
+  train_noise_manifests:
+    stationary: data/manifests_v4/noise_stationary_train.jsonl
+    nonstationary: data/manifests_v4/noise_nonstationary_train.jsonl
+    impulsive: data/manifests_v4/noise_impulsive_train.jsonl
+    environmental: data/manifests_v4/noise_environmental_train.jsonl
+  val_noise_manifests:
+    stationary: data/manifests_v4/noise_stationary_val.jsonl
+    nonstationary: data/manifests_v4/noise_nonstationary_val.jsonl
+    impulsive: data/manifests_v4/noise_impulsive_val.jsonl
+    environmental: data/manifests_v4/noise_environmental_val.jsonl
+  train_rir_manifest: data/manifests_v4/rir_train.jsonl
+  val_rir_manifest: data/manifests_v4/rir_val.jsonl
+train:
+  epochs: 1
+  batch_size: 4
+  num_workers: 0
+  persistent_workers: false
+  checkpoint_dir: checkpoints_v4_smoke
+  run_dir: runs_v4_smoke

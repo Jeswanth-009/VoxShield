@@ -1,0 +1,42 @@
+base: fusion_v7_full.yaml
+recipe_version: 11
+
+# Stage-2 defence curriculum: start from the accepted fusion checkpoint with a
+# fresh optimizer and reweight the training distribution toward the military
+# domain (the v4 stage2_defence recipe transplanted onto the fusion
+# architecture). Preservation exposure and loss terms are deliberately kept —
+# v4 found that dropping them let the defence curriculum relearn aggressive
+# clean-speech coloration.
+model:
+  initialize_from: checkpoints_fusion_v7_full/best.pt
+  pretrained: null
+data:
+  snr_db: [-20.0, 15.0]
+  noise_dataset_weights:
+    MAD_dataset: 4.0
+  noise_label_weights:
+    gunshot: 2.0
+    shelling: 2.0
+    drone: 2.0
+    vehicle: 1.5
+    helicopter: 1.5
+    fighter: 1.5
+  category_weights:
+    stationary: 0.75
+    nonstationary: 2.0
+    impulsive: 2.5
+    environmental: 0.75
+  multi_noise_probability: 0.45
+train:
+  epochs: 25
+  learning_rate: 0.0001
+  resume: null
+  early_stopping_patience: 8
+  checkpoint_dir: checkpoints_fusion_v7_stage2
+  run_dir: runs_fusion_v7_stage2
+  # Best-checkpoint selection must not trade clean-speech coloration for
+  # noisy-example SNR while the curriculum weights the defence domain.
+  selection_weights:
+    total: 1.0
+    clean_identity: 1.5
+    clean_spectral_identity: 0.75

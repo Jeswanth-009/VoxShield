@@ -1,0 +1,21 @@
+[Unit]
+Description=VoxShield v3 live speech enhancement
+After=sound.target
+
+[Service]
+Type=simple
+User=voxshield
+Group=audio
+WorkingDirectory=/opt/voxshield
+ExecStart=/opt/voxshield/.venv/bin/voxshield-live --checkpoint /opt/voxshield/checkpoints_v3/best.pt --onnx /opt/voxshield/artifacts/voxshield-v3.onnx --input-device 1 --output-device 2 --threads 1
+Restart=on-failure
+RestartSec=2
+Nice=-5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/voxshield/artifacts
+
+[Install]
+WantedBy=multi-user.target

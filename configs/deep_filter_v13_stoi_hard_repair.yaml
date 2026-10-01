@@ -1,0 +1,62 @@
+base: deep_filter_v12_hard_repair.yaml
+recipe_version: 18
+
+# V13 is a narrow STOI-reliability repair from v12.
+# It exists because v12 improved mean military SNR/STOI/PESQ versus v10/v11,
+# but the strict SIH military gate still failed on per-clip STOI reliability.
+# This run deliberately oversamples the frozen hard examples and uses a very
+# small LR so it can improve the failing vehicle/helicopter/mixed cases without
+# drifting far from the proven v10/v12 behavior.
+model:
+  initialize_from: checkpoints_deep_filter_v12_hard_repair/best.pt
+
+data:
+  samples_per_epoch: 2500
+  hard_mix_probability: 0.75
+  clean_probability: 0.12
+  near_clean_probability: 0.12
+  snr_sampling_ranges:
+    - {min: -16.0, max: -8.0, weight: 2.5}
+    - {min: -8.0, max: 2.0, weight: 3.0}
+    - {min: 2.0, max: 14.0, weight: 0.8}
+  multi_noise_probability: 0.60
+  noise_label_weights:
+    gunshot: 3.0
+    shelling: 3.5
+    explosion: 3.0
+    helicopter: 4.0
+    fighter: 3.0
+    vehicle: 4.0
+    siren: 2.0
+    aircon: 1.2
+    fan: 1.2
+  category_weights:
+    stationary: 0.8
+    nonstationary: 3.0
+    impulsive: 1.8
+    environmental: 0.8
+
+loss:
+  stoi_envelope: 1.20
+  speech_retention: 2.00
+  spectral_hole: 1.60
+  spectral_delta: 1.40
+  waveform_l1: 0.45
+  clean_identity: 1.1
+  clean_spectral_identity: 0.8
+
+train:
+  epochs: 10
+  batch_size: 12
+  num_workers: 0
+  persistent_workers: false
+  learning_rate: 0.000005
+  early_stopping_patience: 4
+  checkpoint_dir: checkpoints_deep_filter_v13_stoi_hard_repair
+  run_dir: runs_deep_filter_v13_stoi_hard_repair
+  selection_weights:
+    total: 1.0
+    stoi_envelope: 3.0
+    speech_retention: 2.0
+    clean_identity: 1.25
+    clean_spectral_identity: 0.75

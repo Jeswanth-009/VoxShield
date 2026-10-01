@@ -1,0 +1,47 @@
+base: gtcrn_v3.yaml
+recipe_version: 5
+# A single-microphone deployment candidate for the actual laptop setup.
+# Initialize ONLY from upstream DNS3, never old VoxShield/MAD checkpoints.
+data:
+  root: data
+  multichannel: false
+  train_clean_manifest: data/manifests_v5/clean_train.jsonl
+  val_clean_manifest: data/manifests_v5/clean_val.jsonl
+  train_noise_manifests:
+    stationary: data/manifests_v5/noise_stationary_train.jsonl
+    nonstationary: data/manifests_v5/noise_nonstationary_train.jsonl
+    impulsive: data/manifests_v5/noise_impulsive_train.jsonl
+    environmental: data/manifests_v5/noise_environmental_train.jsonl
+  val_noise_manifests:
+    stationary: data/manifests_v5/noise_stationary_val.jsonl
+    nonstationary: data/manifests_v5/noise_nonstationary_val.jsonl
+    impulsive: data/manifests_v5/noise_impulsive_val.jsonl
+    environmental: data/manifests_v5/noise_environmental_val.jsonl
+  train_rir_manifest: data/manifests_v5/rir_train.jsonl
+  val_rir_manifest: data/manifests_v5/rir_val.jsonl
+  validation_curriculum: true
+  required_validation_datasets: [MAD_dataset]
+  noise_dataset_weights:
+    MAD_dataset: 3.0
+  category_weights:
+    stationary: 1.0
+    nonstationary: 2.0
+    impulsive: 2.0
+    environmental: 1.0
+  samples_per_epoch: 12000
+  snr_db: [-15.0, 15.0]
+  clean_probability: 0.20
+  near_clean_probability: 0.15
+  reverb_probability: 0.35
+loss:
+  clean_identity: 0.5
+  speech_retention: 0.1
+train:
+  epochs: 20
+  learning_rate: 0.00005
+  num_workers: 4
+  checkpoint_dir: checkpoints_v5_mono
+  run_dir: runs_v5_mono
+runtime:
+  wet_mix: 1.0
+  dc_blocker: false

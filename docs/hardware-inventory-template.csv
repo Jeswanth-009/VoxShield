@@ -1,0 +1,11 @@
+item,status,exact_model_or_part_number,quantity,interface,purpose,evidence_or_vendor_link,notes
+Raspberry Pi 5,owned,,1,,edge inference,,Record RAM capacity and OS image
+Primary microphone,not acquired,,,I2S/USB,near-mouth speech plus noise,,Must share sample clock with reference channel
+Reference microphone,not acquired,,,I2S/USB,noise-dominant reference,,Place away from mouth and toward noise field
+Dual-channel audio interface/HAT,not acquired,,,I2S/USB,synchronized capture,,Independent USB devices are not guaranteed synchronized
+Headset/headphones,owned,,,analog/USB,feedback-safe monitoring,,Record exact model
+Power supply,verify,,,USB-C,stable Pi 5 operation,,Record wattage and official/non-official status
+Cooling,verify,,,,sustained Pi benchmark,,Record fan/heatsink model
+Storage,verify,,,,OS model and evidence,,Record media type and capacity
+Physical loopback cable,not acquired,,,,end-to-end latency measurement,,Optional oscilloscope/audio-interface method
+

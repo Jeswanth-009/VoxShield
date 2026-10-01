@@ -1,0 +1,61 @@
+base: hybrid_v4_stage1_preserve.yaml
+
+# Stage 2 starts from the accepted preservation checkpoint with a fresh,
+# lower-rate optimizer.  Keep the preservation objectives: dropping them here
+# caused the defence curriculum to undo the clean-speech correction.
+model:
+  initialize_from: checkpoints_v4_preserve/best.pt
+data:
+  samples_per_epoch: 20000
+  # Stage-2 best-checkpoint selection must observe the same defence-weighted
+  # domain as training. Frozen broad/MAD tests remain separate and unchanged.
+  validation_curriculum: true
+  category_weights:
+    stationary: 0.75
+    nonstationary: 2.0
+    impulsive: 2.5
+    environmental: 0.75
+  noise_dataset_weights:
+    MAD_dataset: 4.0
+  noise_label_weights:
+    gunshot: 2.0
+    shelling: 2.0
+    vehicle: 1.5
+    helicopter: 1.5
+    fighter: 1.5
+    drone: 2.0
+  snr_db: [-20.0, 15.0]
+  # Forty-five percent preservation examples keep the defence-heavy stage
+  # from relearning the aggressive clean-speech coloration seen in Stage 1.
+  clean_probability: 0.25
+  near_clean_probability: 0.20
+  multi_noise_probability: 0.45
+loss:
+  # Recover defence suppression without removing the correction terms.
+  si_snr: 0.50
+  snr: 0.50
+  multi_resolution_stft: 0.55
+  complex_l1: 0.30
+  waveform_l1: 0.60
+  clean_identity: 1.25
+  speech_retention: 0.30
+  preservation_snr: 0.20
+  clean_spectral_identity: 0.60
+  spectral_delta: 0.15
+  phase_consistency: 0.05
+train:
+  epochs: 25
+  learning_rate: 0.0001
+  checkpoint_dir: checkpoints_v4_stage2
+  run_dir: runs_v4_stage2
+  resume: null
+  early_stopping_patience: 7
+  scheduler_metric: selection_score
+  selection_weights:
+    total: 1.0
+    clean_identity: 1.50
+    preservation_snr: 0.08
+    clean_spectral_identity: 0.75
+runtime:
+  # Keep the aligned preservation blend during training gates and deployment.
+  wet_mix: 0.90

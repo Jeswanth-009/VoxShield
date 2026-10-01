@@ -1,0 +1,98 @@
+base: deep_filter_v10.yaml
+recipe_version: 16
+
+# V11 is a targeted robustness fine-tune from v10. It does not try to improve
+# leaderboard-style synthetic metrics first; it attacks the failure observed in
+# laptop/Pi demos: clipped consumer microphones, duplicated or speech-leaking
+# reference channels, air/fan noise, and voice deletion.
+model:
+  initialize_from: checkpoints_deep_filter_v10/best.pt
+
+data:
+  # Keep epochs compact because disk space is tight and all mixtures are drawn
+  # on the fly from manifests.
+  samples_per_epoch: 4000
+  train_clean_manifest: data/manifests_v11/clean_train.jsonl
+  val_clean_manifest: data/manifests_v11/clean_val.jsonl
+  train_noise_manifests:
+    stationary: data/manifests_v11/noise_stationary_train.jsonl
+    nonstationary: data/manifests_v11/noise_nonstationary_train.jsonl
+    impulsive: data/manifests_v11/noise_impulsive_train.jsonl
+    environmental: data/manifests_v11/noise_environmental_train.jsonl
+  val_noise_manifests:
+    stationary: data/manifests_v11/noise_stationary_val.jsonl
+    nonstationary: data/manifests_v11/noise_nonstationary_val.jsonl
+    impulsive: data/manifests_v11/noise_impulsive_val.jsonl
+    environmental: data/manifests_v11/noise_environmental_val.jsonl
+  train_rir_manifest: data/manifests_v11/rir_train.jsonl
+  val_rir_manifest: data/manifests_v11/rir_val.jsonl
+  required_validation_datasets: []
+
+  # Consumer live-path robustness.
+  clipping_probability: 0.28
+  clipping_threshold: [0.25, 0.85]
+  spectral_tilt_probability: 0.55
+  reverb_probability: 0.35
+  clean_probability: 0.22
+  near_clean_probability: 0.22
+  snr_db: [-14.0, 12.0]
+  snr_sampling_ranges:
+    - {min: -18.0, max: -8.0, weight: 1.5}
+    - {min: -8.0, max: 4.0, weight: 2.0}
+    - {min: 4.0, max: 16.0, weight: 1.0}
+  multi_noise_probability: 0.40
+
+  # Make the simulated reference sometimes bad enough to match laptop arrays and
+  # Bluetooth/OS virtual channels. This teaches preservation instead of blindly
+  # cancelling whatever is correlated with the reference.
+  interchannel_delay_samples: [-32, 32]
+  reference_noise_gain_db: [-10.0, 8.0]
+  reference_speech_leak_db: [-18.0, -1.5]
+  reference_self_noise_snr_db: [18.0, 45.0]
+  reference_tilt_probability: 0.85
+
+  # Bias toward the datasets that represent the live failure and defence target.
+  noise_dataset_weights:
+    DNS-Challenge: 3.0
+    MAD_dataset: 3.0
+    small_uav_acoustics: 2.0
+    musan: 1.5
+    esc-50: 1.2
+  noise_label_weights:
+    aircon: 3.0
+    fan: 3.0
+    breathing: 2.0
+    typing: 1.8
+    street: 1.5
+    gunshot: 1.8
+    shelling: 1.8
+    helicopter: 2.5
+    fighter: 2.5
+    vehicle: 2.0
+  category_weights:
+    stationary: 1.8
+    nonstationary: 2.0
+    impulsive: 2.0
+    environmental: 1.4
+
+loss:
+  # Stronger preservation terms because the live failure is voice deletion.
+  clean_identity: 1.5
+  clean_spectral_identity: 1.0
+  speech_retention: 2.5
+  spectral_hole: 2.0
+  spectral_delta: 2.0
+  waveform_l1: 0.75
+
+train:
+  epochs: 12
+  batch_size: 12
+  learning_rate: 0.00006
+  early_stopping_patience: 4
+  checkpoint_dir: checkpoints_deep_filter_v11_realworld
+  run_dir: runs_deep_filter_v11_realworld
+  selection_weights:
+    total: 1.0
+    clean_identity: 2.0
+    clean_spectral_identity: 1.5
+    speech_retention: 2.0

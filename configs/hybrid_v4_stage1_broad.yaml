@@ -1,0 +1,10 @@
+base: hybrid_v4.yaml
+
+# Stage 1 learns broad speech/noise structure. Do not start until the v4 data
+# audit includes RIRs and the intended clean-speech diversity.
+train:
+  epochs: 40
+  checkpoint_dir: checkpoints_v4_stage1
+  run_dir: runs_v4_stage1
+  resume: null
+

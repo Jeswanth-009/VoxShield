@@ -1,0 +1,78 @@
+base: base.yaml
+
+# VoxShield v4 research recipe.  This starts a fresh checkpoint family because
+# the input contract is now synchronized primary + reference audio.
+recipe_version: 4
+audio:
+  sample_rate: 16000
+  n_fft: 512
+  hop_length: 128
+  segment_seconds: 4.0
+model:
+  architecture: hybrid_dual_gtcrn
+  channels: 16
+  recurrent_blocks: 2
+  min_mask_gain: 0.08
+  max_mask_gain: 1.20
+  preserve_bias: 2.0
+data:
+  multichannel: true
+  train_clean_manifest: data/manifests_v4/clean_train.jsonl
+  val_clean_manifest: data/manifests_v4/clean_val.jsonl
+  train_noise_manifests:
+    stationary: data/manifests_v4/noise_stationary_train.jsonl
+    nonstationary: data/manifests_v4/noise_nonstationary_train.jsonl
+    impulsive: data/manifests_v4/noise_impulsive_train.jsonl
+    environmental: data/manifests_v4/noise_environmental_train.jsonl
+  val_noise_manifests:
+    stationary: data/manifests_v4/noise_stationary_val.jsonl
+    nonstationary: data/manifests_v4/noise_nonstationary_val.jsonl
+    impulsive: data/manifests_v4/noise_impulsive_val.jsonl
+    environmental: data/manifests_v4/noise_environmental_val.jsonl
+  train_rir_manifest: data/manifests_v4/rir_train.jsonl
+  val_rir_manifest: data/manifests_v4/rir_val.jsonl
+  samples_per_epoch: 20000
+  snr_db: [-15.0, 20.0]
+  clean_probability: 0.15
+  near_clean_probability: 0.15
+  near_clean_snr_db: [25.0, 40.0]
+  reverb_probability: 0.35
+  multi_noise_probability: 0.35
+  clipping_probability: 0.08
+  interchannel_delay_samples: [-16, 16]
+  reference_noise_gain_db: [-6.0, 6.0]
+  reference_speech_leak_db: [-35.0, -12.0]
+  reference_self_noise_snr_db: [35.0, 55.0]
+  reference_tilt_probability: 0.50
+train:
+  epochs: 60
+  batch_size: 8
+  num_workers: 2
+  persistent_workers: true
+  learning_rate: 0.0003
+  checkpoint_dir: checkpoints_v4
+  run_dir: runs_v4
+  resume: null
+  early_stopping_patience: 10
+  early_stopping_min_delta: 0.0001
+loss:
+  type: legacy
+  si_snr: 0.50
+  snr: 0.50
+  multi_resolution_stft: 0.50
+  complex_l1: 0.25
+  waveform_l1: 0.50
+  clean_identity: 0.75
+  speech_retention: 0.10
+  retention_frame_ms: 20.0
+  retention_max_attenuation_db: 12.0
+  stft_resolutions:
+    - [256, 64]
+    - [512, 128]
+    - [1024, 256]
+runtime:
+  wet_mix: 1.0
+  output_limit: 0.98
+  deadline_fraction: 0.80
+  max_consecutive_overruns: 3
+  recovery_frames: 100

@@ -1,0 +1,13 @@
+base: base.yaml
+
+# Medium real-data run used to estimate full-training duration on this machine.
+# Its checkpoints are diagnostic and are not production models.
+data:
+  samples_per_epoch: 1024
+
+train:
+  epochs: 1
+  batch_size: 32
+  num_workers: 2
+  checkpoint_dir: artifacts/timing-b32w2/checkpoints
+  run_dir: artifacts/timing-b32w2/runs

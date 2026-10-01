@@ -1,0 +1,23 @@
+[Unit]
+Description=VoxShield v4 dual-channel communication enhancement
+After=sound.target
+
+[Service]
+Type=simple
+User=voxshield
+Group=audio
+WorkingDirectory=/opt/voxshield
+Environment=OMP_NUM_THREADS=1
+Environment=OPENBLAS_NUM_THREADS=1
+ExecStart=/opt/voxshield/.venv/bin/voxshield-live --checkpoint /opt/voxshield/checkpoints_v4_stage3/best.pt --onnx /opt/voxshield/artifacts/voxshield-v4-final.onnx --input-device 1 --output-device 1 --primary-channel 0 --reference-channel 1 --threads 1 --queue-blocks 8 --playout-extra-blocks 1 --telemetry-file /opt/voxshield/artifacts/live-telemetry.json --session-report /opt/voxshield/artifacts/last-live-session.json
+Restart=on-failure
+RestartSec=2
+Nice=-10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/voxshield/artifacts
+
+[Install]
+WantedBy=multi-user.target

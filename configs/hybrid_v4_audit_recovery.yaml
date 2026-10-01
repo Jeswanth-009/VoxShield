@@ -1,0 +1,16 @@
+base: hybrid_v4_stage2b_gate.yaml
+
+# Controlled recovery after fixing epoch sharing and output conditioning.
+# Selection uses validation sources only; military test data is not a tuning set.
+model:
+  initialize_from: checkpoints_v4_stage2b/best.pt
+data:
+  samples_per_epoch: 12000
+train:
+  epochs: 3
+  learning_rate: 0.000075
+  checkpoint_dir: checkpoints_v4_audit_recovery
+  run_dir: runs_v4_audit_recovery
+  resume: null
+runtime:
+  dc_blocker: false

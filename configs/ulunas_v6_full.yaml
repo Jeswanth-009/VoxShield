@@ -1,0 +1,18 @@
+base: gtcrn_v5_mono_repair.yaml
+recipe_version: 8
+model:
+  architecture: official_ulunas
+  # Clear the v5 GTCRN checkpoint — this is a different architecture
+  initialize_from: null
+  pretrained: external/ul-unas/checkpoints/model_trained_on_dns3.tar
+data:
+  samples_per_epoch: 5000
+  noise_dataset_weights:
+    MAD_dataset: 4.0
+train:
+  epochs: 20
+  batch_size: 8
+  learning_rate: 0.00005
+  freeze_batch_norm_stats: true
+  checkpoint_dir: checkpoints_ulunas_v6_full
+  run_dir: runs_ulunas_v6_full

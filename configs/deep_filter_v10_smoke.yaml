@@ -1,0 +1,14 @@
+base: deep_filter_v10.yaml
+
+# One-epoch engineering smoke test for the v10 architecture: proves dataset
+# ingestion, forward/backward, checkpointing and config resolution run without
+# errors. It says nothing about quality.
+data:
+  samples_per_epoch: 32
+train:
+  epochs: 1
+  batch_size: 4
+  num_workers: 0
+  persistent_workers: false
+  checkpoint_dir: checkpoints_deep_filter_v10_smoke
+  run_dir: runs_deep_filter_v10_smoke

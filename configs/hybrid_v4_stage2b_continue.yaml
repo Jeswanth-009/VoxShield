@@ -1,0 +1,10 @@
+base: hybrid_v4_stage2b_gate.yaml
+
+# Continue an accepted Stage-2B gate with --resume. The saved checkpoint
+# already owns model and optimizer state, so initialization is disabled.
+model:
+  initialize_from: null
+
+train:
+  epochs: 25
+

@@ -1,0 +1,97 @@
+base: deep_filter_v10.yaml
+recipe_version: 17
+
+# V12 is a bounded repair from the proven v10 checkpoint.
+# It does NOT replace v10 unless frozen broad + military audits improve.
+# Difference from v11:
+# - much lower LR to avoid catastrophic forgetting;
+# - short run;
+# - draws exact v10 failed audit pairs part of the time;
+# - keeps clean/near-clean preservation and STOI-envelope pressure;
+# - removes the overly broad DNS-heavy push that made v11 worse on mixed noise.
+model:
+  initialize_from: checkpoints_deep_filter_v10/best.pt
+
+data:
+  samples_per_epoch: 3000
+  train_clean_manifest: data/manifests_v11/clean_train.jsonl
+  val_clean_manifest: data/manifests_v11/clean_val.jsonl
+  train_noise_manifests:
+    stationary: data/manifests_v11/noise_stationary_train.jsonl
+    nonstationary: data/manifests_v11/noise_nonstationary_train.jsonl
+    impulsive: data/manifests_v11/noise_impulsive_train.jsonl
+    environmental: data/manifests_v11/noise_environmental_train.jsonl
+  val_noise_manifests:
+    stationary: data/manifests_v11/noise_stationary_val.jsonl
+    nonstationary: data/manifests_v11/noise_nonstationary_val.jsonl
+    impulsive: data/manifests_v11/noise_impulsive_val.jsonl
+    environmental: data/manifests_v11/noise_environmental_val.jsonl
+  train_rir_manifest: data/manifests_v11/rir_train.jsonl
+  val_rir_manifest: data/manifests_v11/rir_val.jsonl
+  required_validation_datasets: []
+
+  train_hard_mix_manifest: data/mixtures/v12_hard_failures/manifest.jsonl
+  hard_mix_probability: 0.35
+
+  clean_probability: 0.18
+  near_clean_probability: 0.18
+  snr_db: [-12.0, 10.0]
+  snr_sampling_ranges:
+    - {min: -16.0, max: -8.0, weight: 1.2}
+    - {min: -8.0, max: 2.0, weight: 2.2}
+    - {min: 2.0, max: 14.0, weight: 1.0}
+  multi_noise_probability: 0.50
+  reverb_probability: 0.25
+  clipping_probability: 0.12
+  clipping_threshold: [0.35, 0.90]
+  spectral_tilt_probability: 0.45
+
+  reference_speech_leak_db: [-24.0, -6.0]
+  reference_self_noise_snr_db: [24.0, 50.0]
+  reference_tilt_probability: 0.65
+
+  noise_dataset_weights:
+    MAD_dataset: 3.0
+    DNS-Challenge: 1.4
+    musan: 1.4
+    esc-50: 1.2
+  noise_label_weights:
+    gunshot: 3.0
+    shelling: 3.0
+    explosion: 3.0
+    helicopter: 2.5
+    fighter: 2.5
+    vehicle: 2.0
+    siren: 2.0
+    aircon: 1.5
+    fan: 1.5
+  category_weights:
+    stationary: 1.2
+    nonstationary: 2.2
+    impulsive: 2.2
+    environmental: 1.1
+
+loss:
+  stoi_envelope: 0.45
+  speech_retention: 1.4
+  spectral_hole: 1.3
+  spectral_delta: 1.2
+  waveform_l1: 0.55
+  clean_identity: 1.2
+  clean_spectral_identity: 0.8
+
+train:
+  epochs: 6
+  batch_size: 12
+  num_workers: 0
+  persistent_workers: false
+  learning_rate: 0.000015
+  early_stopping_patience: 3
+  checkpoint_dir: checkpoints_deep_filter_v12_hard_repair
+  run_dir: runs_deep_filter_v12_hard_repair
+  selection_weights:
+    total: 1.0
+    stoi_envelope: 1.5
+    speech_retention: 1.0
+    clean_identity: 1.25
+    clean_spectral_identity: 0.75

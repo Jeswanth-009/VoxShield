@@ -1,0 +1,55 @@
+base: fusion_v7_stage2_defence.yaml
+recipe_version: 14
+
+# V8 repairs the V7 phase branch. V7 applied sigmoid to the imaginary mask
+# and initialized it at -20; the selected checkpoint still has exactly zero
+# imaginary weight, so it never learned meaningful signed phase correction.
+# Retain the proven V7 magnitude/spatial core, reset only that dead branch,
+# and train it around zero with a bounded signed tanh output.
+model:
+  initialize_from: checkpoints_fusion_v7_stage2/best.pt
+  pretrained: null
+  mask_mode: signed_imaginary
+  imaginary_scale: 0.50
+  reset_imaginary_branch: true
+
+data:
+  snr_db: [-12.0, 15.0]
+  clean_probability: 0.25
+  near_clean_probability: 0.20
+  noise_dataset_weights:
+    MAD_dataset: 3.0
+    small_uav_acoustics: 2.0
+  noise_label_weights:
+    helicopter: 2.5
+    fighter: 2.5
+    vehicle: 2.0
+    gunshot: 1.5
+    shelling: 1.5
+    drone: 1.5
+  category_weights:
+    stationary: 1.0
+    nonstationary: 2.0
+    impulsive: 2.0
+    environmental: 1.0
+  multi_noise_probability: 0.30
+  clipping_probability: 0.08
+
+loss:
+  clean_identity: 1.0
+  speech_retention: 1.25
+  spectral_hole: 1.5
+  spectral_delta: 2.0
+  phase_consistency: 0.35
+
+train:
+  epochs: 12
+  learning_rate: 0.00003
+  early_stopping_patience: 4
+  checkpoint_dir: checkpoints_fusion_v8_signed
+  run_dir: runs_fusion_v8_signed
+  selection_weights:
+    total: 1.0
+    clean_identity: 1.5
+    clean_spectral_identity: 1.0
+    speech_retention: 0.75

@@ -1,0 +1,12 @@
+base: base.yaml
+
+# Short real-data integration run. Its checkpoint is not a trained production model.
+data:
+  samples_per_epoch: 64
+
+train:
+  epochs: 1
+  batch_size: 8
+  num_workers: 2
+  checkpoint_dir: artifacts/pilot_v2_corrected/checkpoints
+  run_dir: artifacts/pilot_v2_corrected/runs

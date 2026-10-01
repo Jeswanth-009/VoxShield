@@ -1,0 +1,11 @@
+base: fusion_v8_signed_complex.yaml
+
+data:
+  samples_per_epoch: 32
+train:
+  epochs: 1
+  batch_size: 4
+  num_workers: 0
+  persistent_workers: false
+  checkpoint_dir: checkpoints_fusion_v8_signed_smoke
+  run_dir: runs_fusion_v8_signed_smoke

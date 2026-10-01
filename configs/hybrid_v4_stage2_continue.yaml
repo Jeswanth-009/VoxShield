@@ -1,0 +1,7 @@
+base: hybrid_v4_stage2_defence.yaml
+
+# Resume the accepted three-epoch gate with --resume.  Initialization must be
+# disabled because the checkpoint already contains model/optimizer state.
+model:
+  initialize_from: null
+

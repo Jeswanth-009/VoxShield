@@ -1,0 +1,8 @@
+numpy>=1.26,<3
+scipy>=1.11,<2
+soundfile>=0.12,<1
+PyYAML>=6,<7
+onnxruntime>=1.18,<2
+sounddevice>=0.4.6,<1
+psutil>=5.9,<7
+torch>=2.2,<3

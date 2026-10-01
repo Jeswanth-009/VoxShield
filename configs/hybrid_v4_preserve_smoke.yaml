@@ -1,0 +1,16 @@
+base: hybrid_v4_stage1_preserve.yaml
+
+# Fast integration check for the corrective loss/checkpoint path. Never use
+# this checkpoint for listening tests or deployment.
+data:
+  samples_per_epoch: 16
+
+train:
+  epochs: 1
+  batch_size: 4
+  num_workers: 0
+  persistent_workers: false
+  checkpoint_dir: checkpoints_v4_preserve_smoke
+  run_dir: runs_v4_preserve_smoke
+  early_stopping_patience: null
+

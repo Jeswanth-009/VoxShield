@@ -1,0 +1,5 @@
+base: rtx4060.yaml
+
+# First quality gate: verify trends and listening samples before a long run.
+train:
+  epochs: 5

@@ -1,0 +1,50 @@
+base: fusion_v7_stage2_defence.yaml
+recipe_version: 13
+
+# Bounded hard-military refinement. Use only after the Stage-2 listening gate.
+# The frozen military validation report shows the largest remaining deficits for
+# helicopter, fighter and vehicle recordings and for input SNR below -5 dB.
+# This is a fresh-optimizer transfer, not a resume, and retains 45% clean /
+# near-clean replay so additional suppression cannot silently relearn the old
+# robotic/voice-deletion behaviour.
+model:
+  initialize_from: checkpoints_fusion_v7_stage2/best.pt
+  pretrained: null
+data:
+  snr_db: [-15.0, 10.0]
+  clean_probability: 0.25
+  near_clean_probability: 0.20
+  noise_dataset_weights:
+    MAD_dataset: 5.0
+  noise_label_weights:
+    helicopter: 4.0
+    fighter: 4.0
+    vehicle: 3.5
+    gunshot: 2.0
+    shelling: 2.0
+    drone: 2.0
+    footsteps: 1.5
+  category_weights:
+    stationary: 0.75
+    nonstationary: 2.5
+    impulsive: 2.5
+    environmental: 0.75
+  multi_noise_probability: 0.40
+  clipping_probability: 0.12
+loss:
+  clean_identity: 1.0
+  speech_retention: 1.0
+  spectral_hole: 1.25
+  spectral_delta: 2.0
+  phase_consistency: 0.15
+train:
+  epochs: 8
+  learning_rate: 0.00002
+  early_stopping_patience: 3
+  checkpoint_dir: checkpoints_fusion_v7_stage2c
+  run_dir: runs_fusion_v7_stage2c
+  selection_weights:
+    total: 1.0
+    clean_identity: 1.5
+    clean_spectral_identity: 0.75
+    speech_retention: 0.5

@@ -1,0 +1,48 @@
+.venv/
+venv/
+__pycache__/
+*.egg-info/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.codex_test_tmp/
+.kilo/
+.qodo/
+.zcode/
+.zcodeignore
+.env
+.env.*
+!.env.example
+*.log
+tmp/
+output/
+
+# Locally held or licensed audio and generated manifests.
+data/derived/
+data/external_audioset_targeted/
+data/external_audioset_targeted_smoke/
+data/manifests/
+data/manifests_*/
+data/mixtures/
+data/raw/
+data/user_recordings/
+data/user_recordings_wav/
+
+# Training products and local evidence. The selected release files are
+# explicitly staged; see README.md.
+artifacts/
+checkpoints*/
+runs*/
+*.onnx
+*.pt
+*.pth
+*.tar
+*.wav
+*.flac
+*.ogg
+*.m4a
+
+# Third-party source checkouts are Git submodules.
+external/deepfilternet-packages/
+external/pesq-build/

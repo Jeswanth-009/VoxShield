@@ -1,0 +1,68 @@
+recipe_version: 2
+seed: 1337
+audio:
+  sample_rate: 16000
+  n_fft: 512
+  hop_length: 128
+  segment_seconds: 4.0
+model:
+  channels: 24
+  recurrent_blocks: 2
+  min_mask_gain: 0.10
+  max_mask_gain: 1.15
+data:
+  root: data
+  train_clean_manifest: data/manifests/clean_train.jsonl
+  val_clean_manifest: data/manifests/clean_val.jsonl
+  train_noise_manifests:
+    stationary: data/manifests/noise_stationary_train.jsonl
+    nonstationary: data/manifests/noise_nonstationary_train.jsonl
+    impulsive: data/manifests/noise_impulsive_train.jsonl
+    environmental: data/manifests/noise_environmental_train.jsonl
+  val_noise_manifests:
+    stationary: data/manifests/noise_stationary_val.jsonl
+    nonstationary: data/manifests/noise_nonstationary_val.jsonl
+    impulsive: data/manifests/noise_impulsive_val.jsonl
+    environmental: data/manifests/noise_environmental_val.jsonl
+  train_rir_manifest: data/manifests/rir_train.jsonl
+  val_rir_manifest: data/manifests/rir_val.jsonl
+  samples_per_epoch: 20000
+  snr_db: [-10.0, 20.0]
+  clean_probability: 0.10
+  near_clean_probability: 0.15
+  near_clean_snr_db: [25.0, 40.0]
+  clean_gain_db: [-8.0, 2.0]
+  reverb_probability: 0.25
+  multi_noise_probability: 0.30
+  polarity_probability: 0.50
+  spectral_tilt_probability: 0.30
+  clipping_probability: 0.10
+  clipping_threshold: [0.35, 0.95]
+train:
+  epochs: 100
+  batch_size: 8
+  num_workers: 4
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  grad_clip_norm: 5.0
+  amp: true
+  validate_every: 1
+  checkpoint_dir: checkpoints_v2
+  run_dir: runs_v2
+  resume: null
+loss:
+  si_snr: 0.5
+  snr: 0.5
+  multi_resolution_stft: 0.5
+  complex_l1: 0.25
+  waveform_l1: 0.5
+  stft_resolutions:
+    - [256, 64]
+    - [512, 128]
+    - [1024, 256]
+runtime:
+  wet_mix: 0.80
+  output_limit: 0.98
+  deadline_fraction: 0.90
+  max_consecutive_overruns: 3
+  recovery_frames: 100

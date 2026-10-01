@@ -1,0 +1,7 @@
+base: gtcrn_v5_mono.yaml
+data:
+  samples_per_epoch: 2000
+train:
+  epochs: 3
+  checkpoint_dir: checkpoints_v5_mono_pilot
+  run_dir: runs_v5_mono_pilot

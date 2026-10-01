@@ -1,0 +1,31 @@
+base: deep_filter_v10.yaml
+recipe_version: 16
+
+# V10b: close the single remaining strict-gate failure — military STOI
+# reliability (68.4% vs the 80% target). The v10 final audit showed zero
+# over-suppression: every failing clip *improves* STOI but not enough. This
+# stage therefore fine-tunes the accepted v10 checkpoint with an additional
+# differentiable STOI-style envelope-correlation loss term, directly targeting
+# the intelligibility metric instead of magnitudes alone. Everything else is
+# inherited from v10; the only objective change is the added term.
+model:
+  initialize_from: checkpoints_deep_filter_v10/best.pt
+  pretrained: null
+  # Inherited from the v8 fusion chain; meaningless for the deep-filter
+  # architecture (it has no legacy sigmoid-imaginary branch to reset) and
+  # train.py's guard would reject it.
+  reset_imaginary_branch: false
+
+loss:
+  stoi_envelope: 1.0
+
+train:
+  epochs: 15
+  learning_rate: 0.0001
+  early_stopping_patience: 6
+  checkpoint_dir: checkpoints_deep_filter_v10b_stoi
+  run_dir: runs_deep_filter_v10b_stoi
+
+data:
+  # Fine-tune, not a fresh run: the v10 epoch size can be halved.
+  samples_per_epoch: 5000

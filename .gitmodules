@@ -1,0 +1,9 @@
+[submodule "external/gtcrn_official"]
+	path = external/gtcrn_official
+	url = https://github.com/Xiaobin-Rong/gtcrn.git
+[submodule "external/ul-unas"]
+	path = external/ul-unas
+	url = https://github.com/Xiaobin-Rong/ul-unas.git
+[submodule "external/h-gtcrn"]
+	path = external/h-gtcrn
+	url = https://github.com/Max1Wz/H-GTCRN.git

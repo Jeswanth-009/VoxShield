@@ -1,0 +1,22 @@
+base: hybrid_v4_stage2_defence.yaml
+
+# Recovery gate after the first Stage-2 checkpoint showed that its training
+# curriculum was not applied during validation. Preserve that checkpoint as
+# evidence and start a fresh optimizer in a separate family.
+model:
+  initialize_from: checkpoints_v4_stage2/best.pt
+
+data:
+  # Increase noisy defence exposure from 55% to 65% while retaining all
+  # preservation losses and the 90% aligned dry/wet runtime blend.
+  clean_probability: 0.20
+  near_clean_probability: 0.15
+
+train:
+  epochs: 5
+  learning_rate: 0.000125
+  checkpoint_dir: checkpoints_v4_stage2b
+  run_dir: runs_v4_stage2b
+  resume: null
+  early_stopping_patience: 5
+

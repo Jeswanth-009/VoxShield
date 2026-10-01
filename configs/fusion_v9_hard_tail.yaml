@@ -1,0 +1,59 @@
+base: fusion_v8_signed_complex.yaml
+recipe_version: 15
+
+# Failure-driven curriculum based on the frozen v8 audit.  The weak tail is
+# concentrated in helicopter, vehicle, fighter and mixed military examples,
+# especially below 0 dB.  This recipe keeps explicit preservation exposure but
+# no longer lets easy/near-clean examples dominate the defence refinement.
+model:
+  initialize_from: checkpoints_fusion_v8_signed/best.pt
+  reset_imaginary_branch: false
+
+data:
+  clean_probability: 0.15
+  near_clean_probability: 0.15
+  snr_db: [-20.0, 15.0]
+  snr_sampling_ranges:
+    - {min: -20.0, max: -10.0, weight: 3.0}
+    - {min: -10.0, max: 0.0, weight: 4.0}
+    - {min: 0.0, max: 8.0, weight: 2.0}
+    - {min: 8.0, max: 15.0, weight: 1.0}
+  noise_dataset_weights:
+    MAD_dataset: 6.0
+    small_uav_acoustics: 2.0
+  noise_label_weights:
+    helicopter: 5.0
+    vehicle: 5.0
+    fighter: 4.0
+    shelling: 3.0
+    gunshot: 2.0
+    drone: 2.0
+  category_weights:
+    stationary: 0.5
+    nonstationary: 3.0
+    impulsive: 2.0
+    environmental: 0.5
+  multi_noise_probability: 0.50
+  clipping_probability: 0.04
+
+loss:
+  si_snr: 0.20
+  snr: 0.20
+  clean_identity: 1.25
+  speech_retention: 1.75
+  spectral_hole: 2.0
+  spectral_delta: 2.5
+  phase_consistency: 0.50
+
+train:
+  epochs: 15
+  learning_rate: 0.00005
+  early_stopping_patience: 5
+  checkpoint_dir: checkpoints_fusion_v9_hard_tail
+  run_dir: runs_fusion_v9_hard_tail
+  selection_weights:
+    total: 1.0
+    clean_identity: 1.5
+    clean_spectral_identity: 1.0
+    speech_retention: 1.0
+

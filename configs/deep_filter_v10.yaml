@@ -1,0 +1,60 @@
+base: fusion_v8_signed_complex.yaml
+recipe_version: 15
+
+# V10 attacks the central unresolved problem (military low-SNR reliability and
+# robotic voice) by changing the reconstruction, not merely the weights:
+#
+# * a multi-frame complex deep filter replaces the pointwise-only mask, so a
+#   harmonic can be reinforced across neighbouring frames instead of being
+#   decided bin-by-bin (DeepFilterNet principle, arXiv:2110.05588);
+# * speech presence and suppression strength are estimated separately, with a
+#   conservative gain floor and an explicit transient path so impulsive noise
+#   removal cannot delete consonant onsets;
+# * capacity rises from the 147k fusion core to roughly 1.1M parameters while
+#   staying causal and streamable (a distilled Pi student comes later).
+#
+# Trained from scratch — no fusion checkpoint is compatible with this
+# architecture, and the v8/v9 checkpoints remain untouched baselines.
+model:
+  architecture: deep_filter_dual
+  initialize_from: null
+  pretrained: null
+  # Inherited from the v8 fusion chain but meaningless for this architecture;
+  # cleared so any future initialize_from on deep_filter_dual cannot trip the
+  # fusion-specific guard in train.py.
+  reset_imaginary_branch: false
+  channels: 160
+  recurrent_blocks: 4
+  deep_filter_taps: 5
+  df_scale: 0.5
+  imaginary_scale: 0.5
+  min_mask_gain: 0.03
+  transient_gate: 0.5
+
+loss:
+  # The v8 chain selected checkpoints partly on clean_spectral_identity but
+  # never weighted that loss term, so the selection contribution was a
+  # constant zero. Weight it here so preservation selection actually measures
+  # magnitude/phase coloration on clean and near-clean inputs.
+  clean_spectral_identity: 0.5
+
+data:
+  # Double the fine-tune epoch size: a from-scratch core needs more distinct
+  # mixture draws per epoch than the v8 fine-tune did.
+  samples_per_epoch: 10000
+
+train:
+  epochs: 60
+  batch_size: 16
+  learning_rate: 0.0005
+  # From-scratch training: BatchNorm statistics must adapt (the fusion chain
+  # froze them for fine-tuning pretrained cores).
+  freeze_batch_norm_stats: false
+  early_stopping_patience: 8
+  checkpoint_dir: checkpoints_deep_filter_v10
+  run_dir: runs_deep_filter_v10
+  selection_weights:
+    total: 1.0
+    clean_identity: 1.5
+    clean_spectral_identity: 1.0
+    speech_retention: 0.75

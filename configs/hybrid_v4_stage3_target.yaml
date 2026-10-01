@@ -1,0 +1,29 @@
+base: hybrid_v4_stage2_defence.yaml
+
+# Stage 3 is intentionally unusable until real target-device manifests exist.
+# It fine-tunes on synchronized/acoustically matched target recordings while
+# retaining broad validation manifests to detect catastrophic forgetting.
+model:
+  initialize_from: checkpoints_v4_stage2b/best.pt
+data:
+  train_noise_manifests:
+    stationary: data/manifests_target/noise_stationary_train.jsonl
+    nonstationary: data/manifests_target/noise_nonstationary_train.jsonl
+    impulsive: data/manifests_target/noise_impulsive_train.jsonl
+    environmental: data/manifests_target/noise_environmental_train.jsonl
+  train_rir_manifest: data/manifests_target/rir_train.jsonl
+  samples_per_epoch: 8000
+  category_weights:
+    stationary: 1.0
+    nonstationary: 1.5
+    impulsive: 2.0
+    environmental: 1.0
+  noise_dataset_weights: {}
+  noise_label_weights: {}
+  clipping_probability: 0.03
+train:
+  epochs: 15
+  learning_rate: 0.00003
+  checkpoint_dir: checkpoints_v4_stage3
+  run_dir: runs_v4_stage3
+  resume: null

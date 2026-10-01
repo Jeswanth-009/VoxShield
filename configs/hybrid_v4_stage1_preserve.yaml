@@ -1,0 +1,56 @@
+base: hybrid_v4.yaml
+
+# Short corrective fine-tune after the epoch-10 Stage-1 checkpoint.  This is a
+# separate experiment: it never overwrites checkpoints_v4_stage1.
+model:
+  initialize_from: checkpoints_v4_stage1/best.pt
+
+data:
+  # More than half of each epoch explicitly teaches identity/preservation.
+  samples_per_epoch: 12000
+  clean_probability: 0.30
+  near_clean_probability: 0.25
+  category_weights:
+    stationary: 0.85
+    nonstationary: 1.20
+    impulsive: 1.35
+    environmental: 0.85
+
+loss:
+  si_snr: 0.40
+  snr: 0.40
+  multi_resolution_stft: 0.60
+  complex_l1: 0.30
+  waveform_l1: 0.65
+  clean_identity: 1.50
+  speech_retention: 0.25
+  preservation_snr: 0.25
+  clean_spectral_identity: 0.75
+  spectral_delta: 0.20
+  phase_consistency: 0.05
+
+train:
+  epochs: 5
+  batch_size: 8
+  num_workers: 4
+  persistent_workers: true
+  learning_rate: 0.000075
+  checkpoint_dir: checkpoints_v4_preserve
+  run_dir: runs_v4_preserve
+  resume: null
+  early_stopping_patience: 4
+  early_stopping_min_delta: 0.0001
+  scheduler_metric: selection_score
+  # Lower is better. Extra clean terms prevent noisy-sample gains from hiding
+  # increasing clean-speech coloration when best.pt is selected.
+  selection_weights:
+    total: 1.0
+    clean_identity: 2.0
+    preservation_snr: 0.10
+    clean_spectral_identity: 1.0
+
+runtime:
+  # Conservative aligned dry/wet blend for evaluation and deployment. The
+  # neural model is still trained end to end; this limits residual artifacts.
+  wet_mix: 0.90
+

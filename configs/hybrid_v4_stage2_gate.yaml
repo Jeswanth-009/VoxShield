@@ -1,0 +1,8 @@
+base: hybrid_v4_stage2_defence.yaml
+
+# Three full-distribution epochs are the bounded defence gate.  This uses the
+# same data/loss recipe and checkpoint directory as Stage 2 so an accepted run
+# can continue with its exact optimizer state.
+train:
+  epochs: 3
+

@@ -1,0 +1,12 @@
+base: gtcrn_v3.yaml
+
+# Fast engineering smoke run. Do not use its checkpoint as the final model.
+data:
+  samples_per_epoch: 64
+train:
+  epochs: 1
+  batch_size: 4
+  num_workers: 0
+  persistent_workers: false
+  checkpoint_dir: checkpoints_v3_pilot_frozen_bn
+  run_dir: runs_v3_pilot_frozen_bn

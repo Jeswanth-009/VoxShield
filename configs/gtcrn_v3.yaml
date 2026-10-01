@@ -1,0 +1,36 @@
+base: base.yaml
+
+# Recipe v3: complete upstream GTCRN initialized from the official DNS3 model.
+recipe_version: 3
+audio:
+  hop_length: 256
+model:
+  architecture: official_gtcrn
+  pretrained: external/gtcrn_official/checkpoints/model_trained_on_dns3.tar
+data:
+  clean_probability: 0.15
+  near_clean_probability: 0.20
+  near_clean_snr_db: [25.0, 40.0]
+train:
+  epochs: 40
+  batch_size: 16
+  num_workers: 2
+  persistent_workers: true
+  learning_rate: 0.0001
+  freeze_batch_norm_stats: true
+  checkpoint_dir: checkpoints_v3
+  run_dir: runs_v3
+  resume: null
+  early_stopping_patience: 8
+  early_stopping_min_delta: 0.0001
+loss:
+  type: gtcrn_hybrid
+  compression_power: 0.3
+  compressed_complex: 30.0
+  compressed_magnitude: 70.0
+  si_snr: 0.10
+  snr: 0.10
+  waveform_l1: 0.20
+runtime:
+  # Never re-introduce the raw noisy signal during normal operation.
+  wet_mix: 1.0

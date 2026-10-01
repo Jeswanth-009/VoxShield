@@ -1,0 +1,27 @@
+base: fusion_v7_full.yaml
+recipe_version: 12
+
+# Stage-3 preserve/polish: short low-rate pass from the stage-2 checkpoint with
+# boosted preservation objectives and preservation-weighted selection, on
+# balanced data (no defence reweighting). Run only if the stage-2 gates show
+# clean-speech coloration or speech deletion creeping up.
+model:
+  initialize_from: checkpoints_fusion_v7_stage2/best.pt
+  pretrained: null
+data:
+  # Balanced curriculum with 55% preservation exposure.
+  clean_probability: 0.35
+  near_clean_probability: 0.20
+loss:
+  clean_identity: 1.5
+  speech_retention: 1.0
+train:
+  epochs: 5
+  learning_rate: 0.00002
+  checkpoint_dir: checkpoints_fusion_v7_stage3
+  run_dir: runs_fusion_v7_stage3
+  selection_weights:
+    total: 1.0
+    clean_identity: 2.0
+    clean_spectral_identity: 1.0
+    speech_retention: 0.5

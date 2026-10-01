@@ -1,0 +1,13 @@
+base: gtcrn_v3.yaml
+train:
+  num_workers: 2
+runtime:
+  wet_mix: 1.0
+  output_limit: 0.95
+  deadline_fraction: 0.90
+  max_consecutive_overruns: 3
+  recovery_frames: 200
+onnx:
+  intra_op_threads: 3
+  inter_op_threads: 1
+  graph_optimization: all

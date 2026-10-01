@@ -1,0 +1,8 @@
+dataset,release,official_url,local_root,role,license,license_verified,checksum_or_version,split_policy,notes
+VCTK,0.92,https://datashare.ed.ac.uk/handle/10283/3443,,clean speech,,false,,speaker-disjoint,
+MUSAN,,https://www.openslr.org/17/,,noise/music/babble,CC BY 4.0,false,,source-group-disjoint,
+ESC-50,,https://github.com/karolpiczak/ESC-50,,environmental events,CC BY-NC 3.0,false,,preserve official folds,
+MAD,,,defence noises,,false,,preserve official train/test,Verify the exact source and redistribution terms
+OpenSLR SLR28,,https://www.openslr.org/28/,,RIR and background noise,Apache 2.0,false,,room/recording-disjoint,
+NASA small UAS acoustics,,https://catalog.data.gov/dataset/small-uas-flyover-acoustics-data,,drone/UAV noise,,false,,flight/session-disjoint,
+Target captures,local protocol,,target-domain synchronized audio,project consent and safety policy,false,,session/room/device-disjoint,

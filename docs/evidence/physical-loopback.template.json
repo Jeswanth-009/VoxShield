@@ -1,0 +1,21 @@
+{
+  "test_id": "replace-with-unique-id",
+  "timestamp_utc": null,
+  "operator": null,
+  "hardware": {
+    "computer": "Raspberry Pi 5",
+    "audio_interface": null,
+    "input_device": null,
+    "output_device": null,
+    "sample_rate_hz": 16000,
+    "block_samples": 128
+  },
+  "method": "Electrical or acoustic impulse loopback; state which and retain the raw capture",
+  "repetitions": 0,
+  "latency_samples_ms": [],
+  "measured_end_to_end_latency_ms": null,
+  "maximum_allowed_ms": 50.0,
+  "raw_evidence_paths": [],
+  "notes": null
+}
+

@@ -1,0 +1,11 @@
+base: deep_filter_v10b_stoi.yaml
+
+# Resume variant: --resume restores model+optimizer itself, so the fresh-run
+# initialization source must be cleared (train.py treats them as exclusive).
+model:
+  initialize_from: null
+train:
+  resume: checkpoints_deep_filter_v10b_stoi/last.pt
+  # The partial checkpoint's exhausted scale=0 state is rejected by train.py;
+  # resume with a fresh dynamic scaler after the zero-gradient sqrt bug fix.
+  amp: true
